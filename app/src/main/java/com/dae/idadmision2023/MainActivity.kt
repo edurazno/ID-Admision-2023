@@ -40,13 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initScan() {
 
-       /* val options : ScanOptions = ScanOptions()
-        options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-        options.setPrompt(("Escanea el QR del formato de asignación de examen"))
-        options.setCameraId(0)
-        options.setBeepEnabled(true)
-        //options.setOrientationLocked(false)
-        options.setBarcodeImageEnabled(true)*/
+
 
         IntentIntegrator(this).initiateScan()
     }
