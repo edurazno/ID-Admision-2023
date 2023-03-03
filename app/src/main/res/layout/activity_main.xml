@@ -29,6 +29,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
         android:hint="Número de solicitud"
+        android:text=" "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,16 +39,26 @@
         android:id="@+id/btn_buscar"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Buscar"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Escanear"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/in_txt_nsolicitud" />
+
+         <Button
+             android:id="@+id/btn_buscar2"
+             android:layout_width="150dp"
+             android:layout_height="wrap_content"
+             android:text="buscar"
+             app:layout_constraintEnd_toEndOf="parent"
+             app:layout_constraintTop_toBottomOf="@+id/in_txt_nsolicitud"
+             />
 
          <androidx.constraintlayout.widget.ConstraintLayout
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
              android:layout_marginTop="10dp"
-             app:layout_constraintTop_toBottomOf="@+id/btn_buscar">
+             app:layout_constraintTop_toBottomOf="@+id/btn_buscar2">
+
+
     <TextView
         android:id="@+id/tv_lbl_No_solicitud"
         android:layout_width="match_parent"
