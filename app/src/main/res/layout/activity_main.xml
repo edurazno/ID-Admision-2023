@@ -29,7 +29,6 @@
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
         android:hint="Número de solicitud"
-        android:text=" "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,7 +75,7 @@
         android:layout_marginTop="3dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lbl_No_solicitud"
-        android:text="200728200"/>
+        />
 
     <TextView
         android:id="@+id/tv_lbl_Nombre"
@@ -96,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lbl_Nombre"
-        android:text="Eduardo Durazno Coyotl Durazno coyotl" />
+        />
 
     <TextView
         android:id="@+id/tv_lbl_carrera"
@@ -117,7 +116,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lbl_carrera"
-        android:text="Lic en Cs de la Computación" />
+        />
 
     <TextView
         android:id="@+id/tv_lbl_sede"
@@ -138,7 +137,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_lbl_sede"
-        android:text="Centro de convenciones" />
+        />
 
     <TextView
         android:id="@+id/tv_lbl_fecha"
@@ -149,16 +148,16 @@
         android:text="Fecha y hora de examen:"
 
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvsede" />
 
              <TextView
                  android:id="@+id/tvFecha"
-                 android:layout_width="215dp"
+                 android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:layout_marginTop="3dp"
-                 android:text="05-may-2023 / 13:00"
                  app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintStart_toEndOf="@+id/tv_lbl_fecha"
+                 app:layout_constraintStart_toEndOf="@id/tv_lbl_fecha"
                  app:layout_constraintBottom_toBottomOf="parent"/>
          </androidx.constraintlayout.widget.ConstraintLayout>
 

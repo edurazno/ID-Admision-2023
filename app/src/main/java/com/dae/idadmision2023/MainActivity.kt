@@ -1,31 +1,27 @@
 package com.dae.idadmision2023
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.dae.idadmision2023.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.google.zxing.integration.android.IntentIntegrator
 import java.io.File
 import java.io.IOException
-import java.io.InputStream
+
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
-
-    /*val getContent = registerForActivityResult(GetContent()){
-            uri :Uri? -> {
-                if (uri == null){
-                    Toast.makeText(this@MainActivity,"Cancelado", Toast.LENGTH_SHORT)
-                }
-                else{
-                    Toast.makeText(this@MainActivity,"Scanead", Toast.LENGTH_SHORT)
-                }
-        }
-    }*/
+    var encontrado = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +29,10 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //SCANEAR
         binding.btnBuscar.setOnClickListener { initScan() }
 
+        //BUSCAR
         binding.btnBuscar2.setOnClickListener {
             val matricula: String = binding.inTxtNsolicitud.text.toString()
             fnBuscarMatricula(matricula)
@@ -43,31 +41,108 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fnBuscarMatricula(matricula: String) {
-
         //202228541
-
         if (matricula.length == 9) {
-            Toast.makeText(this, matricula, Toast.LENGTH_SHORT).show()
-            searchInJSON(matricula)
+            //Toast.makeText(this, matricula, Toast.LENGTH_SHORT).show()
+
+            encontrado = searchInJSON(matricula)
+
+            //Revisa si se encotró información del aspirante.
+            if (!encontrado){
+
+                Toast.makeText(this, "No. de Solicitud \n ¡No encontrado!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, android.os.Build.VERSION.SDK_INT.toString(),Toast.LENGTH_SHORT).show()
+                binding.tvCarrera.text = ""
+                binding.tvFecha.text = ""
+                binding.tvsede.text = ""
+                binding.tvNoSolicitud.text = ""
+                binding.tvNombre.text = ""
+
+                /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q){
+                    loadImage()
+                }*/
+
+            }
         } else {
-            Toast.makeText(this, "Ingresa los 9 dígitos de la matrícula", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Ingresa los 9 dígitos de la matrícula", Toast.LENGTH_SHORT).show()
+            initScan()
         }
     }
 
-    private fun searchInJSON(matricula: String) {
+     @RequiresApi(Build.VERSION_CODES.Q)
+     fun loadImage() {
+         val path = "/storage/emulated/0/Download/fotos/202228568.jpg"
+         val file = File(path)
+         val imageUri = Uri.fromFile(file)
 
-        val gson = Gson()
-        val json = loadData()
-        val aspirante = gson.fromJson(json, dataAspirantes::class.java)
-
-        Log.d("res", aspirante.id.toString())
-
+         Glide.with(this).load(imageUri).into(binding.ivFoto)
     }
 
-    fun loadData(): String {
-        var tContents : String = ""
+    private fun initScan() {
+
+        val integrator = IntentIntegrator(this)
+        integrator.setPrompt("\"Escanea el código de barras del formato de asignación de examen\"")
+        integrator.setCameraId(0)
+        integrator.setBeepEnabled(true)
+        integrator.setTorchEnabled(true) //flash
+
+        if (binding.inTxtNsolicitud.text == null){
+            integrator.initiateScan()
+        }else{
+            //busca lo ingresado en la caja de texto
+            fnBuscarMatricula(binding.inTxtNsolicitud.text.toString())
+        }
+    }
+
+    //SCANNER
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        val matricula: String
+        if (result != null) {
+            if (result.contents == null) {
+                Toast.makeText(this, "cancelado", Toast.LENGTH_SHORT).show()
+            } else {
+                //Toast.makeText(this, "${result.contents}", Toast.LENGTH_SHORT).show()
+                matricula = result.contents.toString()
+                searchInJSON(matricula)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun searchInJSON(matricula: String) : Boolean{
+
+        var flag = false
+        val gson = Gson()
+        val json = loadData("aspirantes.json")
+
+        val arrayAspirantesType = object : TypeToken<Array<dataAspirantes>>() {}.type
+        val aspirantes: Array<dataAspirantes> = gson.fromJson(json, arrayAspirantesType)
+
+        aspirantes.forEachIndexed { idx, asp ->
+            if (asp.matricula == matricula) {
+                //Toast.makeText(this, asp.matricula, Toast.LENGTH_SHORT).show()
+                binding.tvCarrera.text = asp.carrera
+                binding.tvFecha.text = asp.fecha + " / " +asp.hora
+                binding.tvsede.text = asp.sede
+                binding.tvNoSolicitud.text = asp.matricula
+                binding.tvNombre.text = asp.nombre
+
+                if (android.os.Build.VERSION.SDK_INT >= 29){
+                    loadImage()
+                }
+
+                flag = true
+            }
+        }
+        return flag
+    }
+
+    fun loadData(inFile: String): String {
+        var tContents: String = ""
         try {
-            val stream = assets.open("aspirantes.json")
+            val stream = assets.open(inFile)
             val size = stream.available()
             val buffer = ByteArray(size)
             stream.read(buffer)
@@ -78,36 +153,4 @@ class MainActivity : AppCompatActivity() {
         }
         return tContents
     }
-
-    private fun initScan() {
-
-        /* val options : ScanOptions = ScanOptions()
-         options.setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
-         options.setPrompt(("Escanea el QR del formato de asignación de examen"))
-         options.setCameraId(0)
-         options.setBeepEnabled(true)
-         //options.setOrientationLocked(false)
-         options.setBarcodeImageEnabled(true)*/
-
-        IntentIntegrator(this).initiateScan()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        val matricula: String
-        if (result != null) {
-            if (result.contents == null) {
-                Toast.makeText(this, "cancelado", Toast.LENGTH_SHORT).show()
-
-            } else {
-                Toast.makeText(this, "${result.contents}", Toast.LENGTH_SHORT).show()
-                matricula = result.contents.toString()
-                searchInJSON(matricula)
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
-
 }
