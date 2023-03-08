@@ -58,10 +58,6 @@ class MainActivity : AppCompatActivity() {
                 binding.tvNoSolicitud.text = ""
                 binding.tvNombre.text = ""
 
-                /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q){
-                    loadImage()
-                }*/
-
             }
         } else {
             //Toast.makeText(this, "Ingresa los 9 dígitos de la matrícula", Toast.LENGTH_SHORT).show()
@@ -70,8 +66,8 @@ class MainActivity : AppCompatActivity() {
     }
 
      @RequiresApi(Build.VERSION_CODES.Q)
-     fun loadImage() {
-         val path = "/storage/emulated/0/Download/fotos/202228568.jpg"
+     fun loadImage(matricula: String) {
+         val path = "storage/emulated/0/Download/fotos/${matricula}.jpg"
          val file = File(path)
          val imageUri = Uri.fromFile(file)
 
@@ -84,12 +80,15 @@ class MainActivity : AppCompatActivity() {
         integrator.setPrompt("\"Escanea el código de barras del formato de asignación de examen\"")
         integrator.setCameraId(0)
         integrator.setBeepEnabled(true)
-        integrator.setTorchEnabled(true) //flash
+        //integrator.setTorchEnabled(true) //flash
 
-        if (binding.inTxtNsolicitud.text == null){
+        if ( binding.inTxtNsolicitud.text.toString().isEmpty()){
             integrator.initiateScan()
+            //Toast.makeText(this,"aqui...",Toast.LENGTH_SHORT).show()
         }else{
             //busca lo ingresado en la caja de texto
+            //binding.inTxtNsolicitud.text.toString()
+
             fnBuscarMatricula(binding.inTxtNsolicitud.text.toString())
         }
     }
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 binding.tvNombre.text = asp.nombre
 
                 if (android.os.Build.VERSION.SDK_INT >= 29){
-                    loadImage()
+                    loadImage(asp.matricula)
                 }
 
                 flag = true
