@@ -7,4 +7,18 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Colores Admisión 2023 -->
+    <color name="primarioOscuro">#003B5C</color>
+    <color name="primarioClaro">#00B5E2</color>
+    <color name="naranjaNMS">#ff3943</color>
+    <color name="verdeModalidades">#2E9F37</color>
+    <color name="azulPrepas">#4dbcc6</color>
+    <color name="grisDependencias">#979797</color>
+
+    <color name="grisBuap1">#F6EBEB</color>
+    <color name="grisBuap2">#E3E4F8</color>
+    <color name="grisBuap3">#BCBCBC</color>
+
+
 </resources>

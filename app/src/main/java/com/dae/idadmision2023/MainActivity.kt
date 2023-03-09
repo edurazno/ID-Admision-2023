@@ -1,15 +1,18 @@
 package com.dae.idadmision2023
 
+
+import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target
 import com.dae.idadmision2023.databinding.ActivityMainBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -17,11 +20,11 @@ import com.google.zxing.integration.android.IntentIntegrator
 import java.io.File
 import java.io.IOException
 
-
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     var encontrado = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,15 +32,29 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //SCANEAR
-        binding.btnBuscar.setOnClickListener { initScan() }
 
-        //BUSCAR
-        binding.btnBuscar2.setOnClickListener {
-            val matricula: String = binding.inTxtNsolicitud.text.toString()
-            fnBuscarMatricula(matricula)
+        //BOTON SCANEAR
+        binding.btnBuscar.setOnClickListener {
+
+            hideKeyBoard()
+            if (!binding.inTxtNsolicitud.text.isNullOrBlank()) {
+
+                fnBuscarMatricula(binding.inTxtNsolicitud.text.toString())
+            }else{
+                initScan()
+            }
         }
 
+    }
+
+    fun hideKeyBoard(){
+        val view = this.currentFocus
+        if(view != null){
+            val hideMe = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            hideMe.hideSoftInputFromWindow(view.windowToken,0)
+        }else{
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+        }
     }
 
     private fun fnBuscarMatricula(matricula: String) {
@@ -45,7 +62,8 @@ class MainActivity : AppCompatActivity() {
         if (matricula.length == 9) {
             //Toast.makeText(this, matricula, Toast.LENGTH_SHORT).show()
 
-            encontrado = searchInJSON(matricula)
+            //encontrado = searchInJSON(matricula)
+            encontrado = searchInJSON1(matricula)
 
             //Revisa si se encotró información del aspirante.
             if (!encontrado){
@@ -59,7 +77,8 @@ class MainActivity : AppCompatActivity() {
                 binding.tvNombre.text = ""
 
             }
-        } else {
+
+         }else {
             //Toast.makeText(this, "Ingresa los 9 dígitos de la matrícula", Toast.LENGTH_SHORT).show()
             initScan()
         }
@@ -67,7 +86,8 @@ class MainActivity : AppCompatActivity() {
 
      @RequiresApi(Build.VERSION_CODES.Q)
      fun loadImage(matricula: String) {
-         val path = "storage/emulated/0/Download/fotos/${matricula}.jpg"
+         //val path = "storage/emulated/0/Download/fotos/${matricula}.jpg"
+         val path = "/storage/emulated/0/Download/fotos/${matricula}.jpg"
          val file = File(path)
          val imageUri = Uri.fromFile(file)
 
@@ -75,43 +95,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initScan() {
-
         val integrator = IntentIntegrator(this)
         integrator.setPrompt("\"Escanea el código de barras del formato de asignación de examen\"")
         integrator.setCameraId(0)
         integrator.setBeepEnabled(true)
         //integrator.setTorchEnabled(true) //flash
-
-        if ( binding.inTxtNsolicitud.text.toString().isEmpty()){
-            integrator.initiateScan()
-            //Toast.makeText(this,"aqui...",Toast.LENGTH_SHORT).show()
-        }else{
-            //busca lo ingresado en la caja de texto
-            //binding.inTxtNsolicitud.text.toString()
-
-            fnBuscarMatricula(binding.inTxtNsolicitud.text.toString())
-        }
+        integrator.initiateScan()
     }
 
     //SCANNER
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
-        val matricula: String
         if (result != null) {
-            if (result.contents == null) {
                 Toast.makeText(this, "cancelado", Toast.LENGTH_SHORT).show()
-            } else {
-                //Toast.makeText(this, "${result.contents}", Toast.LENGTH_SHORT).show()
-                matricula = result.contents.toString()
-                searchInJSON(matricula)
-            }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
     private fun searchInJSON(matricula: String) : Boolean{
-
         var flag = false
         val gson = Gson()
         val json = loadData("aspirantes.json")
@@ -131,10 +134,38 @@ class MainActivity : AppCompatActivity() {
                 if (android.os.Build.VERSION.SDK_INT >= 29){
                     loadImage(asp.matricula)
                 }
-
                 flag = true
             }
         }
+
+        return flag
+    }
+
+    private fun searchInJSON1(matricula: String) : Boolean{
+
+        val gson = Gson()
+        val json = loadData("aspirantes5.json")
+        val flag :Boolean
+
+        val arrayAspirantesType = object : TypeToken<Array<dataAspirantes>>() {}.type
+        val aspirantes: Array<dataAspirantes> = gson.fromJson(json, arrayAspirantesType)
+
+        val encontrado = aspirantes.find{ it.matricula == matricula}
+
+        if ( encontrado != null){
+            binding.tvNoSolicitud.text = encontrado.matricula
+            binding.tvNombre.text = encontrado.nombre
+            binding.tvCarrera.text = encontrado.carrera
+            binding.tvsede.text = encontrado.sede
+            binding.tvFecha.text = encontrado.fecha + " / " + encontrado.hora
+            if (android.os.Build.VERSION.SDK_INT >= 29)   loadImage(encontrado.matricula)
+
+            flag = true
+        }else{
+            Toast.makeText(this, "Matricula no encontrada", Toast.LENGTH_SHORT).show()
+            flag = false
+        }
+
         return flag
     }
 

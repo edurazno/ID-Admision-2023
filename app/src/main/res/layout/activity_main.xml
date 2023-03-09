@@ -5,162 +5,211 @@
     tools:context=".MainActivity"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/fondo"
     >
+        <LinearLayout
+            android:id="@+id/linear_ly_matricula_boton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginHorizontal="16dp">
 
-     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-         android:layout_marginHorizontal="16dp"
-         android:layout_marginTop="20dp">
+            <ImageView
+                android:id="@+id/ivFoto"
+                android:layout_width="190dp"
+                android:layout_height="220dp"
+                android:background="@color/white" />
 
-    <ImageView
-        android:id="@+id/ivFoto"
-        android:layout_width="190dp"
-        android:layout_height="220dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginTop="10dp"
+                android:id="@+id/textField"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:hint="Número de Solicitud"
+                android:textColorHint="@color/primarioOscuro"
+                app:startIconDrawable="@drawable/ic_buscar"
+                app:startIconContentDescription=""
+                app:endIconMode="clear_text"
+                app:boxBackgroundColor="@color/white"
+                app:hintTextColor="@color/primarioOscuro"
+                app:startIconTint="@color/primarioOscuro"
+                app:boxStrokeColor="@color/primarioOscuro"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inTxtNsolicitud"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:maxLength="9"
+                    android:digits="1234567890"
+                    android:inputType="number"
+                    />
 
-        android:background="@color/black" />
-
-    <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/in_txt_nsolicitud"
-        android:layout_width="250dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="10dp"
-        android:hint="Número de solicitud"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivFoto" />
-
-    <Button
-        android:id="@+id/btn_buscar"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="Escanear"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/in_txt_nsolicitud" />
-
-         <Button
-             android:id="@+id/btn_buscar2"
-             android:layout_width="150dp"
-             android:layout_height="wrap_content"
-             android:text="buscar"
-             app:layout_constraintEnd_toEndOf="parent"
-             app:layout_constraintTop_toBottomOf="@+id/in_txt_nsolicitud"
-             />
-
-         <androidx.constraintlayout.widget.ConstraintLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="10dp"
-             app:layout_constraintTop_toBottomOf="@+id/btn_buscar2">
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-    <TextView
-        android:id="@+id/tv_lbl_No_solicitud"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="No. de Solicitud:"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <Button
+                android:id="@+id/btn_buscar"
+                style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                app:icon="@drawable/ic_scanner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Escanear"
+                android:textStyle="bold"
+                android:backgroundTint="@color/primarioOscuro"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                app:iconSize="25dp"
+                app:elevation="20dp"
+                app:iconTint="@color/white"
+                />
+
+            <TextView
+                android:id="@+id/tv_lbl_No_solicitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No. de Solicitud:"
+                android:textColor="@color/primarioOscuro"
+                android:textSize="18sp"/>
 
 
-    <TextView
-        android:id="@+id/tv_No_solicitud"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lbl_No_solicitud"
-        />
+            <TextView
+                android:id="@+id/tv_No_solicitud"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/primarioOscuro"
+                android:textStyle="bold"
+                tools:text="202300007"
+                android:backgroundTint="@color/primarioOscuro"
+                />
 
-    <TextView
-        android:id="@+id/tv_lbl_Nombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:text="Nombre:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_No_solicitud" />
-    <TextView
-        android:id="@+id/tvNombre"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lbl_Nombre"
-        />
+            <!--<TextView
+                android:layout_width="150dp"
+                android:layout_height="1dp"
 
-    <TextView
-        android:id="@+id/tv_lbl_carrera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:text="Carrera:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvNombre" />
+                android:background="#000000"
+                android:textColor="@color/primarioOscuro"
+                android:backgroundTint="@color/primarioOscuro" />-->
 
-    <TextView
-        android:id="@+id/tvCarrera"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lbl_carrera"
-        />
+            <TextView
+                android:id="@+id/tv_lbl_Nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
 
-    <TextView
-        android:id="@+id/tv_lbl_sede"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:text="Sede de examen:"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvCarrera" />
+                android:textColor="@color/primarioOscuro"
+                android:textSize="18sp"
+                android:text="Nombre:"
+                />
 
-    <TextView
-        android:id="@+id/tvsede"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_lbl_sede"
-        />
+            <TextView
+                android:id="@+id/tvNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-    <TextView
-        android:id="@+id/tv_lbl_fecha"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textStyle="bold"
-        android:text="Fecha y hora de examen:"
+                tools:text="Eduardo Durazno Coyotl"
+                android:textColor="@color/primarioOscuro"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                />
 
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvsede" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000"
+                android:textColor="@color/primarioOscuro"
+                android:backgroundTint="@color/primarioOscuro" />
 
-             <TextView
-                 android:id="@+id/tvFecha"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginTop="3dp"
-                 app:layout_constraintEnd_toEndOf="parent"
-                 app:layout_constraintStart_toEndOf="@id/tv_lbl_fecha"
-                 app:layout_constraintBottom_toBottomOf="parent"/>
-         </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tv_lbl_carrera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--</LinearLayout>-->
+                android:textColor="@color/primarioOscuro"
+                android:textSize="18sp"
+                android:text="Carrera:"
+                />
+
+            <TextView
+                android:id="@+id/tvCarrera"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                tools:text="Lic en Cs. de la Computación"
+                android:textColor="@color/primarioOscuro"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000"
+                android:textColor="@color/primarioOscuro"
+                android:backgroundTint="@color/primarioOscuro" />
+
+            <TextView
+                android:id="@+id/tv_lbl_sede"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+
+                android:textSize="18sp"
+                android:textColor="@color/primarioOscuro"
+                android:text="Sede de examen:"/>
+
+            <TextView
+                android:id="@+id/tvsede"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/primarioOscuro"
+                tools:text="Centro de convenciones CU"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000"
+                android:textColor="@color/primarioOscuro"
+                android:backgroundTint="@color/primarioOscuro"
+                />
+
+            <TextView
+                android:id="@+id/tv_lbl_fecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+
+                android:textSize="18sp"
+                android:textColor="@color/primarioOscuro"
+                android:text="Fecha y hora de examen:"
+                />
+
+            <TextView
+                android:id="@+id/tvFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:textColor="@color/primarioOscuro"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                tools:text="14/05/2023 - 11:00am"
+                />
+
+            <!--<TextView
+                android:layout_width="250dp"
+                android:layout_height="1dp"
+                android:background="#000000"
+                android:textColor="@color/primarioOscuro"
+                android:backgroundTint="@color/primarioOscuro"
+                />-->
+
+        </LinearLayout>
+
+
 </ScrollView>
