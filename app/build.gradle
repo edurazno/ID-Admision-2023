@@ -64,4 +64,11 @@ dependencies {
     //corrutinas
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
+    //splashScreen
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+    implementation "com.airbnb.android:lottie:5.0.1"
+
+    //Zoom ImageView
+    implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
+
 }

@@ -6,6 +6,7 @@ data class dataAspirantes(
     val nombre:     String,
     val carrera:    String,
     val sede:       String,
+    val sede_code:  String,
     val fecha:      String,
     val hora:       String
 )
