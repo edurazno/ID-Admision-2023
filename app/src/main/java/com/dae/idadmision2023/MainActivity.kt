@@ -4,20 +4,19 @@ package com.dae.idadmision2023
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
-import android.widget.ScrollView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,10 +31,9 @@ import com.google.gson.reflect.TypeToken
 import com.google.zxing.integration.android.IntentIntegrator
 import java.io.File
 import java.io.IOException
-import java.security.AccessController.getContext
-import java.sql.Time
-import java.time.Instant
 import java.util.*
+import kotlin.math.min
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,30 +59,41 @@ class MainActivity : AppCompatActivity() {
         when(tituloSede){
            "CC01" -> binding.tvTituloSede.text = "Centro de convenciones CU"
            "CC02" -> binding.tvTituloSede.text = "Complejo cultural universitario CCU"
-           "CC03" -> binding.tvTituloSede.text = "Fac. de cultura física"
+           "CC03" -> binding.tvTituloSede.text = "Facultad de cultura física"
         }
 
-
         revisaPremisoStorage()
+        revisaPermisoAllFiles()
 
+
+        val numSolicitud = binding.inTxtNsolicitud.text
         //BOTON SCANEAR
         binding.btnBuscar.setOnClickListener {
 
             hideKeyBoard()
 
-            if (!binding.inTxtNsolicitud.text.isNullOrBlank()) {
+            if (!numSolicitud.isNullOrBlank()) {
                 borrarDatos()
-                fnBuscarMatricula(binding.inTxtNsolicitud.text.toString())
+                fnBuscarMatricula(numSolicitud.toString())
             }else{
                 borrarDatos()
                 initScan()
             }
-
         }
 
         //cerrar aplicacion
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+    }
+
+    private fun revisaPermisoAllFiles() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            if (!Environment.isExternalStorageManager()) {
+                val getpermission = Intent()
+                getpermission.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                startActivity(getpermission)
+            }
+        }
     }
 
     private fun borrarDatos() {
@@ -115,6 +124,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Debes aceptar el permiso de almacenamiento en ajustes de la app", Toast.LENGTH_SHORT).show()
         }else{
             //pedir permiso
+
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 777)
         }
     }
@@ -149,9 +159,6 @@ class MainActivity : AppCompatActivity() {
     private fun fnBuscarMatricula(matricula: String) {
         //202228541
         if (matricula.length == 9) {
-            //Toast.makeText(this, matricula, Toast.LENGTH_SHORT).show()
-
-            //encontrado = searchInJSON(matricula)
             encontrado = searchInJSON1(matricula)
 
             //Revisa si se encotró información del aspirante.
@@ -196,8 +203,10 @@ class MainActivity : AppCompatActivity() {
         val gson = Gson()
         val json = loadData("json_79k.json")
         val flag :Boolean
+
         val arrayAspirantesType = object : TypeToken<Array<dataAspirantes>>() {}.type
-        val aspirantes: Array<dataAspirantes> = gson.fromJson(json, arrayAspirantesType)
+
+        val aspirantes : Array<dataAspirantes> = gson.fromJson(json, arrayAspirantesType)
 
         val encontrado = aspirantes.find{ it.matricula == matricula}
 
@@ -205,22 +214,101 @@ class MainActivity : AppCompatActivity() {
 
             revisaSede(encontrado.sede_code)
             revisaFechaDia(encontrado.fecha)
+            revisaTurno(encontrado.hora)
+
             binding.inTxtNsolicitud.setText(encontrado.matricula)
             binding.tvNoSolicitud.text  = encontrado.matricula
             binding.tvNombre.text       = encontrado.nombre
             binding.tvCarrera.text      = encontrado.carrera
             binding.tvsede.text         = encontrado.sede
             binding.tvFecha.text        = encontrado.fecha + " - " + encontrado.hora
-
             if (android.os.Build.VERSION.SDK_INT >= 29)   loadImage(encontrado.matricula)
             flag = true
+
         }else{
             Toast.makeText(this, "No. de Solicitud no válido.", Toast.LENGTH_SHORT).show()
             borrarDatos()
             flag = false
         }
-
         return flag
+    }
+
+    private fun revisaTurno(hora : String) {
+        val c = Calendar.getInstance()
+        var horaSistema = c.get(Calendar.HOUR_OF_DAY)
+        val minutoSis = c.get(Calendar.MINUTE)
+
+        val horaSis = horaSistema  //horaSistema.toString().substring(0,2).toInt()
+        val horaExamen = hora.substring(0,2).toInt()
+
+        Log.d("hoa", horaSistema.toString())
+        Log.d("hoa", horaExamen.toString())
+        Log.d("hoa", minutoSis.toString())
+
+        checaTurno(horaExamen,minutoSis, horaSis)
+
+    }
+
+    private fun checaTurno(horaExamen:Int, minutoSis:Int, horaSistema:Int) {
+
+        if (horaExamen == 7 && horaSistema < horaExamen  ) {
+            if (minutoSis <= 55) {
+                if (horaSistema < horaExamen ) {
+                    //Toast.makeText(this, "Turno 1 a tiempo:$horaExamen hora sistema: $horaSistema:$minutoSis VERDE", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "VERDE", Toast.LENGTH_SHORT).show()
+                } else {
+                    //Toast.makeText(this, "Hora de examen: $horaExamen: hora sistema: $horaSistema$minutoSis ROJO", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "ROJO", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                //Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "ROJO", Toast.LENGTH_SHORT).show()
+            }
+
+        //TURNO 2 11:00
+        } else if (horaExamen == 11 && horaSistema < horaExamen  ) {
+            if (minutoSis <= 55) {
+                if (horaSistema < horaExamen ) {
+                    Toast.makeText(this, "Turno 2 a tiempo:$horaExamen hora sistema: $horaSistema:$minutoSis verde", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo", Toast.LENGTH_SHORT).show()
+            }
+
+        //TURNO 3 15:00
+        } else if ((horaExamen == 15 || horaExamen == 15 ) && horaSistema < horaExamen  ) {
+            if (minutoSis <= 55) {
+                if (horaSistema < horaExamen ) {
+                    Toast.makeText(this, "Turno 3 a tiempo:$horaExamen hora sistema: $horaSistema:$minutoSis verde", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo", Toast.LENGTH_SHORT).show()
+            }
+
+        //TURNO DE PRUEBA
+        } else if ((horaExamen == 17) && horaSistema < horaExamen  ) {
+            if (minutoSis <= 59 && horaSistema < horaExamen ) {
+                if (horaSistema < horaExamen ) {
+                    Toast.makeText(this, "Turno PRUEBA a tiempo:$horaExamen hora sistema: $horaSistema:$minutoSis verde", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo  - $horaSistema:$minutoSis", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Hora de examen: $horaExamen:$minutoSis rojo - $horaSistema:$minutoSis", Toast.LENGTH_SHORT).show()
+            }
+
+        } else if (horaSistema >= horaExamen){
+            Toast.makeText(this, "Hora de examen: $horaSistema:$minutoSis hora ya paso $horaExamen", Toast.LENGTH_SHORT).show()
+
+        //HORA DE EXAMEN INVALIDA
+        }else{
+            Toast.makeText(this, "Hora de examen: $horaSistema:$minutoSis hora no corresponde", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun revisaSede(sedeCode: String) {
@@ -275,11 +363,20 @@ class MainActivity : AppCompatActivity() {
 
     //@RequiresApi(Build.VERSION_CODES.Q)
     fun loadImage(matricula: String) {
-        val path = "/storage/emulated/0/Download/fotos/${matricula}.jpg"
+        //val path = "/storage/emulated/0/Download/fotos/${matricula}.jpg"
+        val path = "/storage/emulated/0/Download/fotos/${matricula}.webp"
         val file = File(path)
         var imageUri = Uri.fromFile(file)
 
         Glide.with(this).load(imageUri).into(binding.ivFoto)
+        //Glide.with(this).load("https://mathiasbynens.be/demo/animated-webp-supported.webp").into(binding.ivFoto)
+
+       /* binding.ivFoto.setOnClickListener {
+            val intent = Intent(this, imgeFullScreen::class.java)
+            intent.putExtra("img", imageUri)
+            this.startActivity(intent)
+        }
+        */
     }
 
     fun loadData(inFile: String): String {

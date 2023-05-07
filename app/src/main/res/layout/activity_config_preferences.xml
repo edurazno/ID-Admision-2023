@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onRadioButtonClicked"
-                android:text="Gimansio de cultura física"
+                android:text="Gimnasio de cultura física"
                 android:textColor="@color/primarioOscuro"
                 android:textStyle="bold"
                 android:textSize="15sp"/>
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onRadioButtonClicked"
-                android:text="Centro conveniciones CCU"
+                android:text="Centro convenciones CCU"
                 android:textColor="@color/primarioOscuro"
                 android:textStyle="bold"
                 android:textSize="15sp"/>
