@@ -49,9 +49,27 @@ dependencies {
 
     //zxing
     implementation 'com.google.zxing:core:3.3.0'
+    //manejo de archivos JSON
+    implementation 'com.google.code.gson:gson:2.10.1'
+
     //jurnyApps
     implementation('com.journeyapps:zxing-android-embedded:4.3.0') { transitive = false }
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation "androidx.multidex:multidex:2.0.1"
+
+    //Glide imagenes
+    //implementation 'com.github.bumptech.glide:glide:4.15.0'
+    //annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+
+    //corrutinas
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+
+    //splashScreen
+    implementation 'androidx.core:core-splashscreen:1.0.0'
+    implementation "com.airbnb.android:lottie:5.0.1"
+
+    //Zoom ImageView
+    implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
 
 }
