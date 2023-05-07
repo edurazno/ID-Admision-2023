@@ -98,9 +98,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun borrarDatos() {
 
-        if (binding.tvCarrera.text.isNotEmpty() && binding.tvNombre.text.isNotEmpty() && binding.tvsede.text.isNotEmpty()){
-        //if (binding.inTxtNsolicitud.text.isNullOrBlank()){
-
             binding.inTxtNsolicitud.setText("")
             binding.tvNoSolicitud.text  = ""
             binding.tvNombre.text       = ""
